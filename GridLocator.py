@@ -11,9 +11,9 @@ def find_corners_hough_transform(img_path):
         return None, None
 
     img = cv2.imread(img_path)
-    img = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+    edges = cv2.Canny(gray, 250, 1270, apertureSize=3)
     lines = cv2.HoughLines(edges, 1, np.pi / 180, 180)
     corners = []
 
@@ -24,10 +24,10 @@ def find_corners_hough_transform(img_path):
             b = np.sin(theta)
             x0 = a * rho
             y0 = b * rho
-            x1 = int(x0 + 1000 * (-b))
-            y1 = int(y0 + 1000 * (a))
-            x2 = int(x0 - 1000 * (-b))
-            y2 = int(y0 - 1000 * (a))
+            x1 = int(x0 + 10000 * (-b))
+            y1 = int(y0 + 10000 * (a))
+            x2 = int(x0 - 10000 * (-b))
+            y2 = int(y0 - 10000 * (a))
             cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
         for i, line1 in enumerate(lines):
@@ -51,8 +51,8 @@ def find_corners_hough_transform(img_path):
     else:
         print("No lines were found")
 
-    #cv2.imshow('Corners on Chessboard', img)
-    #cv2.waitKey(0)
+    cv2.imshow('Corners on Chessboard', img)
+    cv2.waitKey(0)
     #cv2.destroyAllWindows()
     return img, corners  # Make sure to return corners
 
