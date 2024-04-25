@@ -26,15 +26,7 @@ def main():
     
     
 
-   
 
-   
-    #print(detections_int)
-    
-
-    # Create the new tensor in the format [x_center, y_center, w, h]
-   
-    #print("Chess coordinates:", chess_coordinates)
 
 
 
