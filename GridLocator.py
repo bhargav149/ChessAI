@@ -1,6 +1,38 @@
 import cv2
 import numpy as np
 import os
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+import copy
+import Until
+
+#Using Clustering to filter out the noise intersection, because there will only have 81 intersection
+#Thus I use 81 Clusters
+def K_Means(corners):
+    data_points_list = corners
+
+    # Convert list of tuples to a NumPy array
+    data_points = np.array(data_points_list)
+
+    # fitting to 81 clustering 
+    kmeans = KMeans(n_clusters = 81)
+    kmeans.fit(data_points)
+
+    # 81 centroids
+    centroids = kmeans.cluster_centers_
+
+    return centroids
+
+    #debug purpose
+    
+
+    # Optional: Plotting the results
+    plt.figure(figsize=(10, 6))
+    plt.scatter(data_points[:, 0], data_points[:, 1], alpha=0.1, color='blue', label='Data Points')
+    plt.scatter(centroids[:, 0], centroids[:, 1], color='red', marker='x', label='Centroids')
+    plt.title('K-means Clustering')
+    plt.legend()
+    plt.show()
 
 
 
@@ -42,57 +74,72 @@ def find_corners_hough_transform(img_path):
                     x, y = intersection.ravel()
                     corners.append((int(x), int(y)))
                     cv2.circle(img, (int(x), int(y)), 5, (0, 255, 0), -1)
+        
+        cv2.imshow('Corners with noise', img)
+        cv2.waitKey(0)
 
-        if corners:
-            for corner in corners:
-                x, y = corner
-                cv2.circle(img, (int(x), int(y)), 10, (255, 0, 0), -1)  # Draw corners in blue
+        
 
     else:
         print("No lines were found")
 
-    cv2.imshow('Corners on Chessboard', img)
-    cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-    return img, corners  # Make sure to return corners
-
-corners_image, detected_corners = find_corners_hough_transform(r'C:\Users\bharg\Desktop\college\spring24\ai\mini project\updated_board.jpg')
-#print("Detected corners:", detected_corners)
-
-
-
-# Assuming detected_corners is a list of tuples (x, y), sorted from top-left to bottom-right
-def sort_corners(corners):
-    # Assuming the top left corner is the first one and bottom right is the last one
-    # Sort corners to get them in order: top-left, top-right, bottom-left, bottom-right
-    corners = sorted(corners, key=lambda x: x[0])  # Sort by x coordinate
-    top_corners = sorted(corners[:2], key=lambda x: x[1])  # Smallest y is top-left
-    bottom_corners = sorted(corners[2:], key=lambda x: x[1], reverse=True)  # Largest y is bottom-right
-    ordered_corners = [top_corners[0], top_corners[1], bottom_corners[0], bottom_corners[1]]
-    return ordered_corners
-
-# Function to convert pixel to chess coordinates
-def pixel_to_chess(pixel, corners):
-    # Get the top-left, top-right, bottom-left, and bottom-right corners
-    (tl, tr, bl, br) = sort_corners(corners)
-
-    # Prepare the points for perspective transformation
-    src_pts = np.array([tl, tr, bl, br], dtype='float32')
-    dst_pts = np.array([[0, 0], [7, 0], [0, 7], [7, 7]], dtype='float32')
-
-    # Get the perspective transformation matrix
-    matrix = cv2.getPerspectiveTransform(src_pts, dst_pts)
-
-    # Apply the perspective transformation to the pixel coordinates
-    pixel_array = np.array([pixel], dtype='float32')
-    pixel_array = np.array([pixel_array])
-    chess_coord = cv2.perspectiveTransform(pixel_array, matrix)
     
-    chess_coord = cv2.perspectiveTransform(pixel_array, matrix)
+    #cv2.destroyAllWindows()
+    filtered_corners = [(x, y) for x, y in corners if x >= 0 and y >= 0]
+    clustered = K_Means(filtered_corners)
+    
+    corners_tuple = [(int(x), int(y)) for x, y in clustered]
 
-    # Rounding the coordinates to the nearest whole number
-    chess_coord_rounded = np.round(chess_coord[0][0]).astype(int)
+    for ac in corners_tuple:
+        x, y = ac
+        cv2.circle(img, (int(x), int(y)), 10, (255, 255, 255), -1)
+    cv2.imshow('True Corners on Chessboard', img)
+    cv2.waitKey(0)
+    return img, corners_tuple  # Make sure to return corners
 
-    # Ensuring the coordinates are within the bounds of the chessboard
-    chess_coord_clamped = np.clip(chess_coord_rounded, 0, 7)
-    return chess_coord_clamped
+
+
+# sort corners in 2DArray.
+def sort_corners(corner_list):
+
+    sorted_y = sorted(corner_list, key=lambda p: p[1])
+    sliced = corner_list[0]
+    sorted_y = sorted(corner_list, key=lambda p: p[1])
+    grid = [[None for _ in range(9)] for _ in range(9)]
+
+
+    i = 0
+
+    while len(sorted_y) > 0:
+    
+        first_nine = copy.deepcopy(sorted_y[0:9])
+        sorted_x = sorted(first_nine, key=lambda p: p[0], reverse=False)
+        sorted_x_copy = copy.deepcopy(sorted_x)
+        grid[i] = sorted_x_copy
+        sorted_y[0:9] = []
+
+        i+=1
+    return grid
+
+def findGrid(points, x, y ):
+    
+    rows=8
+    cols=8
+    Smallest = float('inf')
+    Coor = None
+    # Points are assumed to be sorted row-wise
+    for i in range(rows):
+        for j in range(cols):
+            top_left = points[i][j]
+            top_right = points[i][j+1]
+            bottom_left = points[i+1][j]
+            bottom_right = points[i+1][j+1]
+            
+            difference = Until.areaDiff(top_left[0], top_left[1], top_right[0], top_right[1], bottom_left[0], bottom_left[1], bottom_right[0], bottom_right[1], x, y)
+            if difference < Smallest:
+                
+                Smallest = difference
+                Coor = (j,i)
+
+    return Coor
+    

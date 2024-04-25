@@ -5,7 +5,7 @@ import os
 from ultralytics import YOLO
 from PIL import Image
 import torch
-import ChessBoard
+from ChessBoard import ChessBoard
 import ChessCls
 import GridLocator as GL
 from ChessCls import ChessCls
@@ -19,8 +19,10 @@ def main():
     
   
     classfier = ChessCls()
-    classfier.getChessBoardArray('/Users/zhiyangcheng/Downloads/Chess Pieces.v23-raw.yolov8/test/images/8ff752f9ed443e6e49d495abfceb2032_jpg.rf.c3e91277eea99c26328e39a6f0285189.jpg')
+    Locations_2d = classfier.testLocation('/Users/zhiyangcheng/Downloads/Chess Pieces.v23-raw.yolov8/test/images/8ff752f9ed443e6e49d495abfceb2032_jpg.rf.c3e91277eea99c26328e39a6f0285189.jpg')
+    board = ChessBoard(board_state=Locations_2d )
 
+    print(board)
     
     
 

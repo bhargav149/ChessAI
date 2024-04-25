@@ -53,7 +53,7 @@ def getSucceedStates(cB, team):
   boardStates = []
   for fState in teamMove:
     for tState in cB.legalMoves(cB.getPiece(fState), fState):
-      newBoard = chessBoard(board_state = copy.deepcopy(cB.getBoard()))
+      newBoard = ChessBoard(board_state = copy.deepcopy(cB.getBoard()))
       newBoard.updateBoard(fState, tState)
       boardStates.append(newBoard)
   return boardStates
