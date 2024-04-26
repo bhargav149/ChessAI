@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw,ImageFont
 import ChessBoard
 import torch
 import Until
-import keyword
+
 
 class ChessCls:
 
@@ -109,7 +109,6 @@ class ChessCls:
             draw.ellipse((dot_x, dot_y, dot_x + 5, dot_y + 5), fill = 'red')
            
 
-        keyword.wait(0)
         self.img.show()
         return return_board
 
