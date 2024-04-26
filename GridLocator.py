@@ -21,7 +21,7 @@ def K_Means(corners):
     # 81 centroids
     centroids = kmeans.cluster_centers_
 
-    return centroids
+    
 
     #debug purpose
     
@@ -33,6 +33,7 @@ def K_Means(corners):
     plt.title('K-means Clustering')
     plt.legend()
     plt.show()
+    return centroids
 
 
 
