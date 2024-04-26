@@ -126,7 +126,7 @@ def arrayToChessPiece(p, pos, newBoard):
   team = p[:1]
   piece = p[1:]
   newPiece = chess.Piece(convertPiece(piece), convertTeam(team))
-  newBoard.set_piece_at((7 - pos[0]) * 8 + pos[1], newPiece)
+  newBoard.set_piece_at(63 - ((7 - pos[0]) * 8 + pos[1]), newPiece)
 
 
 def chessBoardToPyChess(oldBoard):

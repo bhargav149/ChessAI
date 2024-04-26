@@ -5,10 +5,13 @@ import os
 from ultralytics import YOLO
 from PIL import Image
 import torch
-from ChessBoard import ChessBoard
+import ChessBoard as cb
 import ChessCls
 import GridLocator as GL
 from ChessCls import ChessCls
+from functools import lru_cache
+import chess
+import chess.polyglot
 
 def main():
 
@@ -20,9 +23,13 @@ def main():
   
     classfier = ChessCls()
     Locations_2d = classfier.testLocation('/Users/zhiyangcheng/Downloads/Chess Pieces.v23-raw.yolov8/test/images/8ff752f9ed443e6e49d495abfceb2032_jpg.rf.c3e91277eea99c26328e39a6f0285189.jpg')
-    board = ChessBoard(board_state=Locations_2d )
 
+    board = cb.chessBoardToPyChess(Locations_2d)
+    val, move = cb.aphaBeta(board)
+    
     print(board)
+    print("Chess Board score: " + str(val))
+    print("Chess Board move: " + str(move))
     
     
 
