@@ -100,3 +100,38 @@ def evalBoard(board):
 
   score = whiteVal - blackVal
   return score
+
+
+def convertTeam(team):
+  if team == "W":
+    return chess.WHITE
+  else:
+    return chess.BLACK
+
+def convertPiece(piece):
+  if piece == "QE":
+    return chess.QUEEN
+  elif piece == "PA":
+    return chess.PAWN
+  elif piece == "BI":
+    return chess.BISHOP
+  elif piece == "RO":
+    return chess.ROOK
+  elif piece == "KI":
+    return chess.KING
+  elif piece == "KN":
+    return chess.KNIGHT
+    
+def arrayToChessPiece(p, pos, newBoard):
+  team = p[:1]
+  piece = p[1:]
+  newPiece = chess.Piece(convertPiece(piece), convertTeam(team))
+  newBoard.set_piece_at((7 - pos[0]) * 8 + pos[1], newPiece)
+
+
+def chessBoardToPyChess(oldBoard):
+  newBoard = chess.Board(None)
+  for i in range(0, len(oldBoard)):
+    for j in range(0, len(oldBoard)):
+      arrayToChessPiece(oldBoard[i][j], (i, j), newBoard)
+  return newBoard
