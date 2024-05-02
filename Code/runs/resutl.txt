@@ -1,0 +1,25 @@
+train   5
+train   6   50E     640     the best
+train   7   25E     640
+train   8   10E     640
+    # Augmentation parameters
+    hsv_h: 0.015  # hue adjustment for color variation
+    hsv_s: 0.7    # saturation adjustment
+    hsv_v: 0.4    # brightness adjustment
+    flipud: 0.01  # very low probability to flip image upside down
+    fliplr: 0.5   # reasonable probability to flip image left-right
+    degrees: 15   # rotation within 15 degrees to simulate slight orientation changes
+    translate: 0.1  # translation to simulate object shifting
+    scale: 0.05  # minor scaling
+    shear: 2  # slight shearing
+    perspective: 0.0  # no perspective distortion
+train   82  10E     416 
+    same Augmentation with 8
+train   9   50E     640
+    sae Au with 8
+train   10  50E
+
+    hsv_v: 0.7
+train   102  50E     416 * 3
+train   103  150E     640
+train   104  75E    640

@@ -1,0 +1,2 @@
+This is our project folder. Switch to the Code folder to run the wrapup.py to run our project. And you should follow the instructions under the Section 6 in mini-project report. 
+Meanwhile, it sumrized what is the purpouse of each file. 
